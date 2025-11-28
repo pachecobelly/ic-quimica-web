@@ -1,0 +1,25 @@
+services:
+  # SERVIÇO 1: BACKEND (PYTHON)
+  api:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+      # Mapeia a pasta bin se você colocar o mopac lá depois
+      - ./bin:/usr/local/bin/mopac_folder 
+    environment:
+      - MOPAC_COMMAND=/usr/local/bin/mopac_folder/mopac
+
+  # SERVIÇO 2: FRONTEND (REACT)
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules # Truque para usar os módulos do container
+    command: sh -c "npm install && npm run dev -- --host"
